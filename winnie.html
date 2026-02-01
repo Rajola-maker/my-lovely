@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Valentine Special Winneiba</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root { --pink: #ff4d6d; }
+* { box-sizing: border-box; transition: all 0.8s ease-in-out; }
+
+body, html {
+  margin: 0; height: 100%;
+  font-family: 'Poppins', sans-serif;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+
+/* Full Screen Background */
+#bg-layer {
+  position: fixed; inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+  transition: background-image 1.2s ease-in-out;
+}
+
+/* Transparent Container - No background box */
+.content-area {
+  display: none;
+  width: 90%; max-width: 500px;
+  text-align: center;
+  color: #000000; /* Black text as requested */
+  animation: fadeIn 1s ease;
+}
+
+.content-area.active { display: block; }
+
+h1 { 
+    font-family: 'Dancing Script', cursive; 
+    font-size: 3.5rem; 
+    margin-bottom: 10px; 
+    font-weight: 800;
+}
+
+p { 
+    font-size: 1.3rem; 
+    margin-bottom: 25px; 
+    font-weight: 600; 
+}
+
+button {
+  background: var(--pink);
+  border: none; padding: 15px 30px;
+  border-radius: 50px; color: white;
+  font-weight: 700; cursor: pointer;
+  margin: 10px; font-size: 1rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+button:hover { transform: scale(1.1); background: #e03a5a; }
+
+input, textarea {
+  width: 100%; padding: 15px;
+  border-radius: 15px; border: 2px solid #000;
+  background: rgba(255,255,255,0.2); 
+  color: #000; font-weight: 600;
+  margin-bottom: 15px; outline: none;
+}
+
+input::placeholder, textarea::placeholder { color: #333; }
+
+/* 16 Gifts Grid */
+.gifts { 
+  display: grid; 
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 10px; 
+  margin-top: 15px;
+}
+
+.gift-box {
+  background: rgba(255,255,255,0.3);
+  height: 65px; display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; border-radius: 12px; cursor: pointer;
+  border: 1px solid #000;
+}
+
+.gift-box:hover { background: var(--pink); border-color: transparent; }
+
+#reveal-img {
+  width: 180px; height: 180px; border-radius: 20px;
+  object-fit: cover; border: 4px solid #000;
+  margin: 15px auto; display: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.heart {
+  position: absolute; color: var(--pink);
+  pointer-events: none; animation: floatUp 4s linear infinite;
+  z-index: 10;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(110vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+}
+
+#copyright { font-size: 0.8rem; margin-top: 30px; font-weight: 700; color: #000; }
+</style>
+</head>
+<body>
+
+<div id="bg-layer"></div>
+
+<iframe id="music" style="display:none" width="0" height="0" src="https://www.youtube.com/embed/S2p0P149Uls?autoplay=1&loop=1&playlist=S2p0P149Uls" frameborder="0" allow="autoplay"></iframe>
+
+<div id="p1" class="content-area active" data-bg="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600">
+  <h1>Hello Winneiba</h1>
+  <p>This is just for you... ❤️</p>
+  <button onclick="playMusic(); go('p2')">Open Now</button>
+</div>
+
+<div id="p2" class="content-area" data-bg="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1600">
+  <h1>Will you be my Valentine partner?</h1>
+  <button onclick="go('p3')">Yes, I will!</button>
+  <button onclick="go('pNo')">No</button>
+</div>
+
+<div id="p3" class="content-area" data-bg="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1600">
+  <h1>Are you absolutely sure? 😍</h1>
+  <button onclick="go('pProve')">Yes, I'm sure!</button>
+  <button onclick="go('pNo')">No</button>
+</div>
+
+<div id="pProve" class="content-area" data-bg="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1600">
+  <h1>Prove your love</h1>
+  <p>Type "I love you" below</p>
+  <input type="text" id="proofInput" placeholder="Type here...">
+  <button onclick="checkProof()">Continue</button>
+</div>
+
+<div id="pGift" class="content-area" data-bg="https://images.unsplash.com/photo-1439853949127-fa647821eba0?w=1600">
+  <h2 id="gift-title" style="font-weight: 800;">Pick one gift 🎁</h2>
+  <img id="reveal-img" src="" alt="gift">
+  <div class="gifts" id="gift-grid"></div>
+  <button id="claim-btn" style="display:none;" onclick="whatsappSend()">Claim Reward</button>
+</div>
+
+<div id="pNo" class="content-area" data-bg="https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=1600">
+  <h1>Sorry for disturbing you</h1>
+  <p>Leave one wish for me</p>
+  <textarea id="wish" placeholder="Your wish..."></textarea>
+  <p>Tell me one thing you like about me</p>
+  <textarea id="like" placeholder="I like..."></textarea>
+  <button onclick="whatsappNo()">Submit Response</button>
+  <div id="copyright">© 2026 venocyber by rajola</div>
+</div>
+
+<script>
+function playMusic(){
+  document.getElementById('music').src =
+  "https://www.youtube.com/embed/S2p0P149Uls?autoplay=1&loop=1&playlist=S2p0P149Uls";
+}
+
+const myNumber = "255676195192";
+let selectedGift = "";
+
+const initialBg = document.querySelector('.content-area.active').dataset.bg;
+document.getElementById('bg-layer').style.backgroundImage = `url('${initialBg}')`;
+
+function go(id) {
+  document.querySelectorAll('.content-area').forEach(g => g.classList.remove('active'));
+  const next = document.getElementById(id);
+  next.classList.add('active');
+  document.getElementById('bg-layer').style.backgroundImage = `url('${next.dataset.bg}')`;
+  spawnHearts();
+}
+
+function checkProof() {
+  if(document.getElementById('proofInput').value.toLowerCase().includes("i love you")) {
+    go('pGift');
+    renderGifts();
+  } else {
+    alert("Please write 'I love you' first ❤️");
+  }
+}
+
+const giftData = [
+  { n: "Ring 💍", i: "https://images.unsplash.com/photo-1589128777073-263566ae5e4d?w=400" },
+  { n: "iPhone 📱", i: "https://images.unsplash.com/photo-1510557880182-3d4d3cba3f21?w=400" },
+  { n: "Flower 🌹", i: "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=400" },
+  { n: "Necklace 📿", i: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400" },
+  { n: "Cash 💵", i: "https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=400" },
+  { n: "Kiss 💋", i: "https://images.unsplash.com/photo-1518193921532-c1ff1f308435?w=400" },
+  { n: "Hug 🤗", i: "https://images.unsplash.com/photo-1516589174184-c68526614af0?w=400" },
+  { n: "T-Shirt 👕", i: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=400" },
+  { n: "Football ⚽", i: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400" },
+  { n: "Jersey 👕", i: "https://images.unsplash.com/photo-1580087442629-123069cab274?w=400" },
+  { n: "Video Call 📹", i: "https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?w=400" },
+  { n: "Sneakers 👟", i: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400" },
+  { n: "Pen 🖊️", i: "https://images.unsplash.com/photo-1585336261022-69c6e29669a4?w=400" },
+  { n: "One Wish ✨", i: "https://images.unsplash.com/photo-1519750783826-51dbff477651?w=400" },
+  { n: "Home Visit 🏠", i: "https://images.unsplash.com/photo-1513584684032-41f21ad2e1bb?w=400" },
+  { n: "Surprise 🎁", i: "https://images.unsplash.com/photo-1549465220-1d8c9d9c4749?w=400" }
+];
+
+function renderGifts() {
+  const grid = document.getElementById('gift-grid');
+  grid.innerHTML = "";
+  giftData.forEach(item => {
+    let d = document.createElement('div');
+    d.className = "gift-box";
+    d.innerHTML = "🎁";
+    d.onclick = () => {
+      if(selectedGift !== "") return;
+      selectedGift = item.n;
+      grid.style.display = "none";
+      document.getElementById('gift-title').innerText = "Your gift is: " + item.n;
+      const img = document.getElementById('reveal-img');
+      img.src = item.i; img.style.display = "block";
+      document.getElementById('claim-btn').style.display = "inline-block";
+      spawnHearts();
+    };
+    grid.appendChild(d);
+  });
+}
+
+function whatsappSend() {
+  window.open(`https://wa.me/${myNumber}?text=Hello Rajola! ❤️ I've chosen my gift: ${selectedGift}`);
+}
+
+function whatsappNo() {
+  const w = document.getElementById('wish').value;
+  const l = document.getElementById('like').value;
+  window.open(`https://wa.me/${myNumber}?text=Hello Rajola, I said No.%0AWish: ${w}%0AWhat I like: ${l}`);
+}
+
+function spawnHearts() {
+  for(let i=0; i<15; i++) {
+    let h = document.createElement('div');
+    h.className = "heart"; h.innerHTML = "❤️";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.animationDuration = (Math.random() * 3 + 2) + "s";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 4000);
+  }
+}
+</script>
+</body>
+</html>
