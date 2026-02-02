@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For Monica | Floating Bestie Journey</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Montserrat:wght@300;400;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+<style>
+:root { --primary: #00d2ff; --secondary: #92fe9d; --dark: #0f0f0f; --accent: #f9ed69; }
+* { box-sizing: border-box; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+body, html { 
+    margin: 0; height: 100%; font-family: 'Montserrat', sans-serif; 
+    overflow: hidden; background-color: #000; color: white; 
+}
+
+/* Background Setup */
+#bg-layer { 
+    position: fixed; inset: 0; background-size: cover; background-position: center; 
+    z-index: -1; filter: brightness(0.9); 
+    transition: background-image 1.2s ease-in-out; 
+}
+
+#bg-overlay {
+    position: fixed; inset: 0;
+    background: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%);
+    z-index: -1;
+}
+
+/* Floating Window Effect */
+.window { 
+    display: none; width: 100%; height: 100%; padding: 20px; 
+    flex-direction: column; justify-content: center; align-items: center; 
+    text-align: center; perspective: 1000px;
+}
+.window.active { display: flex; animation: fadeIn 0.8s ease; }
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.08); 
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 40px;
+    padding: 40px 30px;
+    width: 95%; max-width: 420px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+    
+    /* Floating Animation */
+    animation: float 6s ease-in-out infinite;
+    transform-style: preserve-3d;
+}
+
+/* Glass Card Hover Tilt */
+.glass-card:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transform: translateY(-5px) scale(1.02);
+}
+
+@keyframes float {
+    0% { transform: translateY(0px) rotateX(0deg); }
+    50% { transform: translateY(-20px) rotateX(2deg); }
+    100% { transform: translateY(0px) rotateX(0deg); }
+}
+
+h1 { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-style: italic; color: #fff; margin: 0; }
+.romantic-text { font-family: 'Dancing Script', cursive; font-size: 2.3rem; color: var(--accent); margin-bottom: 10px; }
+p { font-size: 0.95rem; line-height: 1.6; color: #f0f0f0; margin: 15px 0; }
+
+/* Buttons & Inputs */
+button { 
+    background: linear-gradient(45deg, var(--primary), var(--secondary)); 
+    border: none; padding: 18px; color: #000; font-weight: 800; 
+    text-transform: uppercase; letter-spacing: 2px; cursor: pointer; 
+    border-radius: 100px; font-size: 0.9rem; width: 100%;
+    box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
+}
+button:active { transform: scale(0.95); }
+
+input, textarea { 
+    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); 
+    padding: 16px; color: white; border-radius: 30px; width: 100%; 
+    outline: none; margin-bottom: 15px; text-align: center;
+}
+
+/* Gift Grid Fix */
+.gift-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
+.gift-box { 
+    aspect-ratio: 1/1; background: rgba(255,255,255,0.1); 
+    border: 1px solid rgba(255,255,255,0.3); border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; cursor: pointer;
+}
+.gift-box:hover { background: var(--accent); transform: scale(1.1) rotate(5deg); }
+
+#result-img { width: 150px; height: 150px; border-radius: 20px; object-fit: cover; border: 3px solid var(--accent); margin: 0 auto 15px; display: none; }
+
+/* Animation Keyframes */
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+.star { position: absolute; background: white; border-radius: 50%; opacity: 0.5; animation: twinkle var(--d) linear infinite; }
+@keyframes twinkle { 0% { opacity: 0.2; transform: translateY(0); } 50% { opacity: 1; } 100% { opacity: 0.2; transform: translateY(-100px); } }
+</style>
+</head>
+<body>
+
+<div id="bg-layer"></div>
+<div id="bg-overlay"></div>
+
+<div id="app"></div>
+
+<script>
+const phone = "255676195192";
+const targetName = "Monica";
+
+// 22 Page Content Data
+const pages = [
+    { id: "p1", title: `Hi ${targetName}`, text: "This is a journey through our friendship. Are you ready?", btn: "Start The Journey", bg: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200" },
+    { id: "p2", title: "My Bestie", text: "They say best friends are the siblings we choose for ourselves.", btn: "So True", bg: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=1200" },
+    { id: "p3", title: "Memories", text: "Think back to when we first met. Did you think we'd be this close?", q: "What's our funniest memory?", type: "text", idn: "q1", bg: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1200" },
+    { id: "p4", title: "Through Thick & Thin", text: "You will stay when others leave.Wll you?.", btn: "Always", bg: "https://images.unsplash.com/photo-1543807535-eceef0bc6599?w=1200" },
+    { id: "p5", title: "Your Smile", text: "Your happiness is literally contagious. Keep shining.", btn: "Will Do ✨", bg: "https://images.unsplash.com/photo-1521791136364-798a7bc0d262?w=1200" },
+    { id: "p6", title: "Secret Keeper", text: "My phone's gallery is basically 50% photos of you being weird.", q: "What's a secret only we know?", type: "text", idn: "q2", bg: "https://images.unsplash.com/photo-1516728775854-453b82ee8b77?w=1200" },
+    { id: "p7", title: "Loyalty", text: "In a world of fakes, you are the most real person I know.", btn: "Real Talk", bg: "https://images.unsplash.com/photo-1475483768296-6163e08872a1?w=1200" },
+    { id: "p8", title: "Support", text: "Thank you for being my un-paid therapist 24/7.", btn: "Anytime!", bg: "https://images.unsplash.com/photo-1506863530036-1efeddceb993?w=1200" },
+    { id: "p9", title: "Vibes", text: "Our vibe is just... different. Nobody else gets us.", q: "Describe our vibe in one word.", type: "text", idn: "q3", bg: "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=1200" },
+    { id: "p10", title: "Adventures", text: "Every walk with you turns into a whole adventure.", btn: "Let's Explore", bg: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200" },
+    { id: "p11", title: "Weirdness", text: "If people heard our conversations, we'd be in a mental hospital.", q: "Who's the weirder one?", type: "text", idn: "q4", bg: "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200" },
+    { id: "p12", title: "Friendship", text: "Distance or time can't break what we have.", btn: "friends for ever", bg: "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=1200" },
+    { id: "p13", title: "My Promise", text: "I'll always be the one cheering loudest for you in the front row.", btn: "Promised", bg: "https://images.unsplash.com/photo-1516211697506-8360bd773497?w=1200" },
+    { id: "p14", title: "Grace", text: "I love how you handle every challenge with such strength.", q: "What's your biggest dream?", type: "text", idn: "q5", bg: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=1200" },
+    { id: "p15", title: "Food", text: "Our bond is built on 10% love and 90% sharing snacks.", btn: "Yum!", bg: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1200" },
+    { id: "p16", title: "Growth", text: "I've loved watching you grow into the woman you are today.", btn: "Proud of You", bg: "https://images.unsplash.com/photo-1472396961693-142e6e269027?w=1200" },
+    { id: "p17", title: "Goals", text: "This year is YOUR year, Monica. Go get it.", q: "One thing you want to achieve?", type: "text", idn: "q6", bg: "https://images.unsplash.com/photo-1497561813398-8fcc7a37b591?w=1200" },
+    { id: "p18", title: "Pure Joy", text: "You are my safe place. Never forget that.", btn: "Safe With You", bg: "https://images.unsplash.com/photo-1516589174184-c68526614af0?w=1200" },
+    { id: "p19", title: "No Filter", text: "With you, I can be exactly who I am. No masks.", btn: "Authentic", bg: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1200" },
+    { id: "p20", title: "Value", text: "You are worth more than all the stars in the sky.", q: "Do you know how special you are?", type: "text", idn: "q7", bg: "https://images.unsplash.com/photo-1518193921532-c1ff1f308435?w=1200" },
+    { id: "p21", title: "If you relly love me bestie", text: "Type 'I LOVE YOU RAJOLA' to see your surprise.", q: "", type: "pass", idn: "pcode", bg: "https://images.unsplash.com/photo-1513584684032-41f21ad2e1bb?w=1200" },
+    { id: "p22", title: "The Treasury", text: "Pick one gift box, Monica!", q: "", type: "gift", bg: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?w=1200" }
+];
+
+const gifts = [
+    { n: "Cute Keychain 🔑", i: "https://images.unsplash.com/photo-1584622781564-1d987f7333c1?w=300" },
+    { n: "Tote Bag 👜", i: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=300" },
+    { n: "Chocolate Box 🍫", i: "https://images.unsplash.com/photo-1549465220-1d8c9d9c4749?w=300" },
+    { n: "Scented Candle 🕯️", i: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=300" },
+    { n: "Bestie Mug ☕", i: "https://images.unsplash.com/photo-1517256673644-36ad11246d21?w=300" },
+    { n: "Journal 📓", i: "https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=300" },
+    { n: "Hair Clips 🎀", i: "https://images.unsplash.com/photo-1620331311520-246422ff83f9?w=300" },
+    { n: "Pizza Date 🍕", i: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300" },
+    { n: "Face Masks ✨", i: "https://images.unsplash.com/photo-1590439474864-1598a054522c?w=300" }
+];
+
+let wonGift = "";
+const app = document.getElementById('app');
+
+pages.forEach((p, i) => {
+    let html = `
+    <div id="${p.id}" class="window ${i===0?'active':''}" data-bg="${p.bg}">
+        <div class="glass-card">
+            <div class="romantic-text">Monica's Story</div>
+            <h1>${p.title}</h1>
+            <p>${p.text}</p>
+            ${p.type==='text' ? `<input type="text" id="${p.idn}" placeholder="Answer here...">` : ''}
+            ${p.type==='pass' ? `<input type="text" id="${p.idn}" placeholder="Enter Secret Code...">` : ''}
+            ${p.type==='gift' ? `<div class="gift-grid" id="grid"></div><img id="result-img"><button id="claim" style="display:none" onclick="sendWA()">Claim Gift</button>` : ''}
+            ${p.type!=='gift' ? `<button onclick="goNext('${p.id}', '${pages[i+1]?.id}', '${p.type}', '${p.idn}')">${p.btn || 'Continue'}</button>` : ''}
+        </div>
+    </div>`;
+    app.innerHTML += html;
+});
+
+const updateBg = (url) => document.getElementById('bg-layer').style.backgroundImage = `url('${url}')`;
+updateBg(pages[0].bg);
+
+function goNext(cur, nxt, type, idn) {
+    if(type === 'text' || type === 'pass') {
+        let val = document.getElementById(idn).value.trim();
+        if(!val) return alert("Dont leave this page blank Monica! ❤️");
+        if(type === 'pass' && val.toLowerCase() !== "I LOVE YOU RAJOLA") return alert("Hint:Wright'I LOVE YOU RAJOLA'");
+    }
+    document.getElementById(cur).classList.remove('active');
+    const nextEl = document.getElementById(nxt);
+    nextEl.classList.add('active');
+    updateBg(nextEl.dataset.bg);
+    if(nxt === 'p22') setupGifts();
+}
+
+function setupGifts() {
+    const g = document.getElementById('grid');
+    gifts.forEach(item => {
+        let d = document.createElement('div');
+        d.className = "gift-box"; d.innerHTML = "🎁";
+        d.onclick = () => {
+            wonGift = item.n;
+            g.style.display = "none";
+            const img = document.getElementById('result-img');
+            img.src = item.i; img.style.display = "block";
+            document.querySelector('#p22 h1').innerHTML = "Surprise!";
+            document.querySelector('#p22 p').innerHTML = `You won: ${item.n}`;
+            document.getElementById('claim').style.display = "block";
+        };
+        g.appendChild(d);
+    });
+}
+
+function sendWA() {
+    const q1 = document.getElementById('q1').value;
+    const msg = `*BESTIE JOURNEY: MONICA*\n\n*Memory:* ${q1}\n*Gift Won:* ${wonGift}\n\n_With Love_`;
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`);
+}
+
+// Background Twinkle Stars
+for(let i=0; i<30; i++){
+    let s = document.createElement('div'); s.className='star';
+    s.style.left = Math.random()*100+'vw'; s.style.top = Math.random()*100+'vh';
+    s.style.width = s.style.height = Math.random()*3+'px';
+    s.style.setProperty('--d', Math.random()*3+2+'s');
+    document.body.appendChild(s);
+}
+</script>
+</body>
+</html>
